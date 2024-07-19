@@ -20,6 +20,7 @@ var (
 	isFullScreen    bool
 	backgroundMusic rl.Music
 	MusicPause      bool
+	cam             rl.Camera2D
 )
 
 func drawScene() {
@@ -64,7 +65,6 @@ func input() {
 	}
 }
 
-
 func update() {
 	running = !rl.WindowShouldClose()
 	rl.UpdateMusicStream(backgroundMusic) // Update the music stream
@@ -73,12 +73,22 @@ func update() {
 	} else {
 		rl.ResumeMusicStream(backgroundMusic)
 	}
+
+	// Update camera target to follow the player
+	cam.Target = rl.NewVector2(
+		playerDest.X + playerDest.Width/2,
+		playerDest.Y + playerDest.Height/2,
+	)
 }
 
 func render() {
 	rl.BeginDrawing()
 	rl.ClearBackground(bkgColor)
+
+	rl.BeginMode2D(cam)
 	drawScene()
+	rl.EndMode2D()
+
 	rl.EndDrawing()
 }
 
@@ -92,12 +102,18 @@ func init() {
 	rl.PlayMusicStream(backgroundMusic)
 	MusicPause = false
 	
-
 	grassSprite = rl.LoadTexture("resource/Tilesets/Grass.png")
 	playerSprite = rl.LoadTexture("resource/Characters/Basic Charakter Spritesheet.png")
 
 	playerSrc = rl.NewRectangle(0, 0, 48, 48)
 	playerDest = rl.NewRectangle(200, 200, 48, 48)
+
+	cam = rl.NewCamera2D(
+		rl.NewVector2(float32(screenWidth/2), float32(screenHeight/2)),  // camera position
+		rl.NewVector2(float32(playerDest.X + playerDest.Width/2), float32(playerDest.Y + playerDest.Height/2)), // target position
+		0, // rotation
+		1, // zoom
+	)
 }
 
 func quit() {
