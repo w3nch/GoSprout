@@ -85,6 +85,16 @@ func input() {
 	if rl.IsKeyPressed(rl.KeyQ) {
 		MusicPause = !MusicPause
 	}
+
+	// Zoom in and out
+	if rl.IsKeyDown(rl.KeyLeftControl) || rl.IsKeyDown(rl.KeyRightControl) {
+		if rl.IsKeyPressed(rl.KeyW) {
+			cam.Zoom += 0.1
+		}
+		if rl.IsKeyPressed(rl.KeyS) {
+			cam.Zoom -= 0.1
+		}
+	}
 }
 
 func update() {
